@@ -93,7 +93,7 @@ export function AuthForm() {
       const result = await submit("signin", {
         identifier,
         password,
-        username, // optionally inserts username if user didn't have one
+        username,
       });
       if (result?.status === "verification-required") {
         setTargetEmail(result.email || identifier);

@@ -164,12 +164,7 @@ export default function Home() {
             <div className="grid items-center gap-12 lg:grid-cols-[1.1fr_0.9fr] lg:gap-16">
               {/* Left Column: Value proposition */}
               <div>
-                <div className="inline-flex items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-950/70 px-3.5 py-1.5 text-xs font-semibold text-emerald-300 backdrop-blur-md">
-                  <span className="size-2 animate-pulse rounded-full bg-emerald-400" />
-                  Kariakoo, Dar es Salaam · Tanzania&apos;s Heavy-Duty Machinery Depot
-                </div>
-
-                <h1 className="mt-6 text-balance text-4xl font-extrabold leading-[1.08] tracking-tight text-white sm:text-5xl lg:text-[3.35rem]">
+                <h1 className="text-balance text-4xl font-extrabold leading-[1.08] tracking-tight text-white sm:text-5xl lg:text-[3.35rem]">
                   Heavy-Duty Machinery, Tools &amp; Power Solutions You Can Rely On.
                 </h1>
 
