@@ -20,12 +20,12 @@ export const metadata: Metadata = {
   keywords: [
     "brush cutter Tanzania",
     "rice mill Dar es Salaam",
-    "air compressor Kariakoo",
+    "air compressor Dar es Salaam",
     "power tools Dar es Salaam",
     "water pump Tanzania",
     "welding machine Dar es Salaam",
     "generators Tanzania",
-    "hardware shop Kariakoo",
+    "hardware shop Dar es Salaam",
   ],
   alternates: { canonical: "/" },
   openGraph: {

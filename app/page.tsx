@@ -49,7 +49,7 @@ const values = [
   {
     icon: TruckIcon,
     title: "Dar es Salaam & Regional Delivery",
-    body: "Collect same-day from Nyanza House in Kariakoo or arrange delivery anywhere in Dar es Salaam and via cargo bus parcels across Tanzania.",
+    body: "Collect same-day from our shop at Nyanza House or arrange delivery anywhere in Dar es Salaam and via cargo bus parcels across Tanzania.",
   },
 ];
 
@@ -68,7 +68,7 @@ const orderSteps = [
   {
     step: "03",
     title: "Tested & Handed Over",
-    desc: "Collect from our Kariakoo shop or get same-day delivery in Dar es Salaam / parcel bus upcountry.",
+    desc: "Collect from our shop or get same-day delivery in Dar es Salaam / parcel bus upcountry.",
   },
 ];
 
@@ -209,7 +209,7 @@ export default function Home() {
                     <CheckIcon className="size-4 text-emerald-400" /> Tested before handover
                   </span>
                   <span className="inline-flex items-center gap-1.5">
-                    <CheckIcon className="size-4 text-emerald-400" /> Same-day Kariakoo dispatch
+                    <CheckIcon className="size-4 text-emerald-400" /> Same-day dispatch &amp; collection
                   </span>
                 </div>
 
@@ -232,7 +232,7 @@ export default function Home() {
                       <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-400">
                         Shop Floor Spotlight
                       </span>
-                      <h2 className="text-lg font-bold text-white">Direct From Our Kariakoo Store</h2>
+                      <h2 className="text-lg font-bold text-white">Direct From Our Shop Floor</h2>
                     </div>
                     <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/20 px-2.5 py-1 text-[10px] font-bold text-emerald-300">
                       <span className="size-1.5 rounded-full bg-emerald-400" />
@@ -281,7 +281,7 @@ export default function Home() {
                   <div className="mt-4 flex items-center justify-between rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-xs">
                     <div className="flex items-center gap-2">
                       <PinIcon className="size-4 text-emerald-400" />
-                      <span className="text-ink-200">Visit us at Nyanza House, Kariakoo</span>
+                      <span className="text-ink-200">Visit us at Nyanza House, Dar es Salaam</span>
                     </div>
                     <a
                       href="#contact"
@@ -308,7 +308,7 @@ export default function Home() {
                   Popular Equipment In Stock
                 </h2>
                 <p className="mt-2 max-w-2xl text-sm leading-6 text-ink-500">
-                  Fresh arrivals photographed directly in our Kariakoo showroom. Ready for collection or delivery.
+                  Fresh arrivals photographed directly in our showroom. Ready for collection or delivery.
                 </p>
               </div>
               <a
@@ -533,14 +533,14 @@ export default function Home() {
         </section>
 
         {/* ========================================================================= */}
-        {/* CONTACT & STORE LOCATION (KARIAKOO STORE & LIVE MAP)                     */}
+        {/* CONTACT & STORE LOCATION                                                 */}
         {/* ========================================================================= */}
         <section id="contact" className="scroll-mt-28 bg-ink-900 py-20 text-white sm:py-24">
           <Container>
             <SectionHeading
               tone="dark"
               eyebrow="Visit Our Shop"
-              title="Come to Kariakoo or Call Us Today"
+              title="Visit Our Shop or Call Us Today"
               intro="We are ready to inspect machines with you, recommend the exact model for your workload, and supply the spares you need."
             />
 
@@ -548,7 +548,7 @@ export default function Home() {
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
                 <div className="rounded-2xl border border-white/10 bg-white/5 p-6 sm:col-span-2 lg:col-span-1">
                   <span className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-brand-300">
-                    <PinIcon className="size-4" /> Kariakoo Shop Location
+                    <PinIcon className="size-4" /> Shop Location
                   </span>
                   <p className="mt-3 text-lg font-semibold leading-7 text-white">{site.address.street}</p>
                   <p className="mt-1 text-sm leading-6 text-ink-300">
