@@ -8,7 +8,12 @@
  * handlers only.
  */
 
-const API_BASE = "https://backend.payhero.co.ke/api/v2";
+const DEFAULT_API_BASE = "https://backend.payhero.co.ke/api/v2";
+
+function apiBase(): string {
+  const configured = process.env.PAYHERO_BASE_URL?.trim().replace(/\/$/, "");
+  return configured || DEFAULT_API_BASE;
+}
 
 export type StkPushResult = {
   ok: boolean;
@@ -70,7 +75,7 @@ export async function initiateStkPush(options: {
   }
 
   try {
-    const response = await fetch(`${API_BASE}/payments`, {
+    const response = await fetch(`${apiBase()}/payments`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -119,19 +124,33 @@ export async function initiateStkPush(options: {
  *
  * The callback is the primary signal; this is the fallback for when it is
  * slow or cannot reach us (a localhost callback URL, for instance).
+ *
+ * The endpoint keys off PayHero's OWN reference — the one returned by the STK
+ * push and stored as `providerRef` — and 404s on our `external_reference`, so
+ * pass the provider reference whenever we have it.
  */
 export async function checkTransactionStatus(
   reference: string,
+  providerRef?: string | null,
 ): Promise<{ status: TransactionStatus; receipt?: string; reason?: string }> {
   const token = basicToken();
   if (!token) return { status: "PENDING" };
 
+  const lookup = providerRef?.trim() || reference;
+
   try {
     const response = await fetch(
-      `${API_BASE}/transaction-status?reference=${encodeURIComponent(reference)}`,
+      `${apiBase()}/transaction-status?reference=${encodeURIComponent(lookup)}`,
       { headers: { Authorization: `Basic ${token}` }, cache: "no-store" },
     );
-    if (!response.ok) return { status: "PENDING" };
+
+    if (!response.ok) {
+      // A 404 simply means PayHero has not registered it yet.
+      if (response.status !== 404) {
+        console.error("PayHero status check returned", response.status, lookup);
+      }
+      return { status: "PENDING" };
+    }
 
     const payload = (await response.json()) as Record<string, unknown>;
     return readOutcome(payload);
@@ -164,7 +183,13 @@ export function readOutcome(
     return undefined;
   };
 
-  const receiptValue = pick("MpesaReceiptNumber", "mpesa_receipt_number", "receipt");
+  const receiptValue = pick(
+    "MpesaReceiptNumber",
+    "mpesa_receipt_number",
+    "provider_reference",
+    "third_party_reference",
+    "receipt",
+  );
   const receipt = typeof receiptValue === "string" ? receiptValue : undefined;
 
   const reasonValue = pick("ResultDesc", "result_desc", "message", "error_message");

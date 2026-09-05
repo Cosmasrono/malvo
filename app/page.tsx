@@ -5,12 +5,9 @@ import { ProductCatalog } from "@/components/product-catalog";
 import { WhatsAppFab } from "@/components/whatsapp-fab";
 import { buttonStyles, Container, SectionHeading } from "@/components/ui";
 import {
-  BladeIcon,
   ChatIcon,
   CheckIcon,
   ClockIcon,
-  GaugeIcon,
-  GrainIcon,
   PhoneIcon,
   PinIcon,
   ShieldIcon,
@@ -20,7 +17,6 @@ import {
 } from "@/components/icons";
 import { mapsQuery, directionsUrl, site, whatsappLink, primaryPhone } from "@/lib/site";
 import { getPublishedProducts } from "@/lib/catalog";
-import { formatKsh } from "@/lib/money";
 
 // The catalogue is served from cache and refreshed on every admin change;
 // this ceiling is just a safety net.
@@ -34,7 +30,7 @@ const stats = [
   { value: "Nairobi & Upcountry", label: "Daily Bus Cargo Dispatch" },
 ];
 
-// Why choose Maggy City
+// Why choose Maggy City (Store Pillars)
 const values = [
   {
     icon: ShieldIcon,
@@ -42,19 +38,47 @@ const values = [
     body: "Every machine in our shop is selected for commercial durability, easy servicing in local conditions, and continuous spare parts availability.",
   },
   {
-    icon: ChatIcon,
-    title: "Honest Capacity Sizing",
-    body: "Tell us your workshop or farm workload. We calculate generator, pump, and compressor capacity so you buy the right machine the first time.",
+    icon: PinIcon,
+    title: "Physical Nairobi Showroom",
+    body: "Walk into our shop at Nyanza House on Mfangano Street. You can physically inspect the machines, verify build quality, and test-run them before paying.",
+  },
+  {
+    icon: CheckIcon,
+    title: "Transparent Trade Pricing",
+    body: "Fair and honest prices directly from machinery importers. No broker markups or hidden fees — what we quote on WhatsApp or phone is what you pay.",
   },
   {
     icon: ToolIcon,
-    title: "Spares Kept on the Shelf",
-    body: "Blades, discs, pistons, belts, filters, capacitors, and switches — the consumables that keep you earning are kept in stock, not ordered later.",
+    title: "Long-Term Trade Partnership",
+    body: "We stand behind what we sell with ongoing consumable replacements, technical maintenance advice, and technician support throughout your machine's life.",
+  },
+];
+
+// Trade services offered by Maggy City
+const services = [
+  {
+    icon: ChatIcon,
+    title: "Equipment Capacity & Sizing Guidance",
+    body: "Avoid buying an underpowered generator or wrongly sized compressor. Tell us your workshop or farm workload, and our specialists calculate the exact specifications you need.",
+    badge: "Free Advisory",
+  },
+  {
+    icon: ShieldIcon,
+    title: "Pre-Handover Machine Testing & Inspection",
+    body: "Every petrol engine, milling machine, and air compressor is unboxed, lubricated with correct grade oils, fuelled, and test-run in our workshop before you collect or dispatch.",
+    badge: "100% Pre-tested",
+  },
+  {
+    icon: ToolIcon,
+    title: "Immediate Genuine Spares Matching",
+    body: "Need replacement cutting discs, brush cutter blades, pressure switches, or milling screens? Bring your sample or machine model for immediate matching from our shelf stock.",
+    badge: "In Stock at Shop",
   },
   {
     icon: TruckIcon,
-    title: "Nairobi & Countrywide Delivery",
-    body: "Collect same-day from our shop at Nyanza House or arrange delivery anywhere in Nairobi and via cargo bus parcels across Kenya.",
+    title: "Upcountry Bus Cargo Daily Dispatch",
+    body: "We securely pack, crate, and deliver machinery daily to trusted bus parcel companies (Easy Coach, Guardian, Modern Coast, Tahmeed, etc.) across Kenya with instant WhatsApp tracking.",
+    badge: "Daily Dispatches",
   },
 ];
 
@@ -302,72 +326,7 @@ export default async function Home() {
           </Container>
         </section>
 
-        {/* ========================================================================= */}
-        {/* NEW SECTION: FEATURED SHOP FLOOR EQUIPMENT HIGHLIGHTS                    */}
-        {/* ========================================================================= */}
-        <section className="border-b border-ink-200/70 bg-white py-16 sm:py-20">
-          <Container>
-            <div className="flex flex-col items-start justify-between gap-4 md:flex-row md:items-end">
-              <div>
-                <p className="eyebrow">Featured Machinery</p>
-                <h2 className="mt-2 text-3xl font-extrabold tracking-tight text-ink-900 sm:text-4xl">
-                  Popular Equipment In Stock
-                </h2>
-                <p className="mt-2 max-w-2xl text-sm leading-6 text-ink-500">
-                  Fresh arrivals photographed directly in our showroom. Ready for collection or delivery.
-                </p>
-              </div>
-              <a
-                href="#products"
-                className="inline-flex items-center gap-1.5 text-sm font-bold text-brand-700 hover:text-brand-800"
-              >
-                View full catalog ({products.length} items) &rarr;
-              </a>
-            </div>
 
-            <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {featuredProducts.map((item) => (
-                <a
-                  key={item.name}
-                  href="#products"
-                  className="group flex flex-col overflow-hidden rounded-2xl border border-ink-200/70 bg-paper shadow-card transition duration-200 hover:-translate-y-1 hover:shadow-lift"
-                >
-                  <div className="relative h-52 w-full overflow-hidden bg-ink-100">
-                    {item.image ? (
-                      <Image
-                        src={item.image}
-                        alt={item.name}
-                        fill
-                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                        className="object-cover transition-transform duration-300 group-hover:scale-105"
-                      />
-                    ) : null}
-                    {item.badge ? (
-                      <span className="absolute left-3 top-3 z-10 rounded-full bg-ink-900/90 px-3 py-1 text-[11px] font-bold text-white shadow-sm">
-                        {item.badge}
-                      </span>
-                    ) : null}
-                  </div>
-
-                  <div className="flex flex-1 flex-col p-5">
-                    <span className="text-[11px] font-bold uppercase tracking-wider text-brand-700">
-                      {item.category}
-                    </span>
-                    <h3 className="mt-2 text-lg font-bold text-ink-900">{item.name}</h3>
-                    <p className="mt-2 flex-1 text-xs leading-5 text-ink-500">{item.description}</p>
-
-                    <div className="mt-5 flex items-center justify-between gap-3 border-t border-ink-100 pt-4">
-                      <span className="text-base font-bold tracking-tight text-ink-900">
-                        {typeof item.price === "number" ? formatKsh(item.price) : "Ask for a price"}
-                      </span>
-                      <span className="text-xs font-bold text-brand-700">View &rarr;</span>
-                    </div>
-                  </div>
-                </a>
-              ))}
-            </div>
-          </Container>
-        </section>
 
         {/* ========================================================================= */}
         {/* NEW SECTION: 3-STEP ORDERING GUIDE (NO LOGIN REQUIRED)                    */}
@@ -435,6 +394,53 @@ export default async function Home() {
                   </span>
                   <h3 className="mt-5 text-base font-bold tracking-tight text-ink-900">{title}</h3>
                   <p className="mt-2 text-sm leading-6 text-ink-500">{body}</p>
+                </div>
+              ))}
+            </div>
+          </Container>
+        </section>
+
+        {/* ========================================================================= */}
+        {/* SERVICES & TECHNICAL SUPPORT SECTION (#services)                          */}
+        {/* ========================================================================= */}
+        <section id="services" className="scroll-mt-28 border-b border-ink-200/70 bg-ink-50/60 py-20 sm:py-24">
+          <Container>
+            <SectionHeading
+              eyebrow="Our Trade Services"
+              title="More than just a shop — hands-on technical support for your machinery"
+              intro="We don't just sell equipment in a box. Our technical team ensures you get the exact machinery for your workload and provides long-term backup and spare parts."
+            />
+
+            <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+              {services.map(({ icon: Icon, title, body, badge }) => (
+                <div
+                  key={title}
+                  className="flex flex-col justify-between rounded-2xl border border-ink-200/80 bg-white p-6 shadow-sm transition duration-200 hover:-translate-y-1 hover:shadow-card"
+                >
+                  <div>
+                    <div className="flex items-center justify-between">
+                      <span className="grid size-11 place-items-center rounded-xl bg-brand-50 text-brand-700">
+                        <Icon className="size-5" />
+                      </span>
+                      <span className="rounded-full bg-brand-50 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-brand-700">
+                        {badge}
+                      </span>
+                    </div>
+                    <h3 className="mt-5 text-base font-bold tracking-tight text-ink-900">{title}</h3>
+                    <p className="mt-2 text-sm leading-6 text-ink-500">{body}</p>
+                  </div>
+
+                  <div className="mt-6 border-t border-ink-100 pt-4">
+                    <a
+                      href={whatsappLink(`Hello ${site.shortName}, I would like to enquire about your service: ${title}.`)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 text-xs font-bold text-brand-700 hover:text-brand-800"
+                    >
+                      <WhatsAppIcon className="size-3.5" />
+                      Inquire on WhatsApp &rarr;
+                    </a>
+                  </div>
                 </div>
               ))}
             </div>
@@ -523,12 +529,23 @@ export default async function Home() {
               intro="Quick answers to common questions about purchasing, delivery, and spare parts."
             />
 
-            <div className="mx-auto mt-12 max-w-3xl divide-y divide-ink-200">
-              {faqs.map((faq) => (
-                <div key={faq.q} className="py-5">
-                  <h3 className="text-base font-bold text-ink-900">{faq.q}</h3>
-                  <p className="mt-2 text-sm leading-6 text-ink-600">{faq.a}</p>
-                </div>
+            <div className="mx-auto mt-12 max-w-3xl space-y-4">
+              {faqs.map((faq, index) => (
+                <details
+                  key={faq.q}
+                  open={index === 0}
+                  className="group rounded-2xl border border-ink-200/80 bg-paper p-5 transition-all open:bg-white open:shadow-sm"
+                >
+                  <summary className="flex cursor-pointer items-center justify-between font-bold text-ink-900 list-none text-base">
+                    <span>{faq.q}</span>
+                    <span className="ml-4 grid size-7 shrink-0 place-items-center rounded-full bg-ink-100 text-ink-500 transition-transform duration-200 group-open:rotate-180 group-open:bg-brand-50 group-open:text-brand-700">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="size-4">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </span>
+                  </summary>
+                  <p className="mt-3 text-sm leading-6 text-ink-600 border-t border-ink-100 pt-3">{faq.a}</p>
+                </details>
               ))}
             </div>
           </Container>

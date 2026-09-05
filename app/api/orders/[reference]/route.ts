@@ -24,7 +24,7 @@ export async function GET(
     // The callback cannot reach a machine running on localhost, and can lag in
     // production, so ask PayHero directly while we are still waiting.
     if (order.status === "PENDING") {
-      const outcome = await checkTransactionStatus(reference);
+      const outcome = await checkTransactionStatus(reference, order.providerRef);
       if (outcome.status !== "PENDING") {
         order = await prisma.order.update({
           where: { id: order.id },

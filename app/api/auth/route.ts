@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { compare, hash } from "bcryptjs";
-import { createHash, randomBytes, randomInt } from "node:crypto";
+import { createHash, randomBytes, randomInt, timingSafeEqual } from "node:crypto";
 import { prisma } from "@/lib/prisma";
 import { sendVerificationCode } from "@/lib/email";
 
@@ -38,6 +38,12 @@ function isRateLimited(key: string, maxRequests: number, windowMs: number): bool
 // ---------------------------------------------------------------------------
 function digest(value: string) {
   return createHash("sha256").update(value).digest("hex");
+}
+
+function safeCompareHash(a: string, b: string): boolean {
+  const bufA = Buffer.from(a, "hex");
+  const bufB = Buffer.from(b, "hex");
+  return bufA.length === bufB.length && timingSafeEqual(bufA, bufB);
 }
 
 function sessionCookie(response: NextResponse, token: string) {
@@ -178,7 +184,7 @@ export async function POST(request: Request) {
       const isMaxAttempts =
         verification && verification.attempts >= MAX_VERIFY_ATTEMPTS;
       const isWrongCode =
-        verification && verification.codeHash !== digest(code);
+        !verification || !safeCompareHash(verification.codeHash, digest(code));
 
       if (!verification || isExpired || isMaxAttempts || isWrongCode) {
         if (verification && !isExpired && !isMaxAttempts) {
