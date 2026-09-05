@@ -2,9 +2,10 @@
 
 import { FormEvent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { buttonStyles } from "@/components/ui";
 import { whatsappLink, site } from "@/lib/site";
-import { WhatsAppIcon } from "@/components/icons";
+import { GearIcon, WhatsAppIcon } from "@/components/icons";
 
 type Mode = "signin" | "signup";
 
@@ -13,6 +14,7 @@ interface UserProfile {
   email: string;
   username: string | null;
   emailVerified: string | null;
+  isAdmin?: boolean;
 }
 
 export function AuthForm() {
@@ -206,6 +208,27 @@ export function AuthForm() {
             </button>
           </form>
         </div>
+
+        {/* Staff shortcut — only rendered for admin accounts */}
+        {currentUser.isAdmin ? (
+          <Link
+            href="/admin"
+            className="mt-8 flex items-center justify-between gap-4 rounded-xl border border-brand-600/30 bg-brand-50 p-4 transition hover:bg-brand-100"
+          >
+            <span className="flex items-center gap-3">
+              <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-brand-600 text-white">
+                <GearIcon className="size-5" />
+              </span>
+              <span>
+                <span className="block text-sm font-bold text-ink-900">Manage products</span>
+                <span className="block text-xs text-ink-600">
+                  Add, edit or hide anything in the shop catalogue.
+                </span>
+              </span>
+            </span>
+            <span aria-hidden="true" className="text-lg font-bold text-brand-700">→</span>
+          </Link>
+        ) : null}
 
         {/* WhatsApp direct order reminder */}
         <div className="mt-8 rounded-xl border border-brand-200 bg-brand-50 p-4 text-xs text-brand-900">

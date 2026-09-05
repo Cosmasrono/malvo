@@ -1,5 +1,5 @@
 import { Container, SectionHeading } from "@/components/ui";
-import { products } from "@/lib/products";
+import { getPublishedProducts } from "@/lib/catalog";
 import { ProductFilter } from "@/components/product-filter";
 
 /**
@@ -10,7 +10,9 @@ import { ProductFilter } from "@/components/product-filter";
  * thin <ProductFilter> client wrapper. The product *data* (pure JSON, no
  * function references) is passed as props across the boundary.
  */
-export function ProductCatalog() {
+export async function ProductCatalog() {
+  const products = await getPublishedProducts();
+
   return (
     <section id="products" className="scroll-mt-28 py-20 sm:py-24">
       <Container>

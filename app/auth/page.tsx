@@ -9,7 +9,7 @@ export default function AuthPage() {
   return (
     <>
       <SiteHeader />
-      <main className="flex-1 py-16 sm:py-24">
+      <main id="main" className="flex-1 py-16 sm:py-24">
         <Container className="grid gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
           <div>
             <p className="eyebrow">Customer account</p>

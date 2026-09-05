@@ -18,15 +18,19 @@ import {
   TruckIcon,
   WhatsAppIcon,
 } from "@/components/icons";
-import { mapsQuery, site, whatsappLink, primaryPhone } from "@/lib/site";
-import { products } from "@/lib/products";
+import { mapsQuery, directionsUrl, site, whatsappLink, primaryPhone } from "@/lib/site";
+import { getPublishedProducts } from "@/lib/catalog";
+
+// The catalogue is served from cache and refreshed on every admin change;
+// this ceiling is just a safety net.
+export const revalidate = 60;
 
 // Hero quick stats
 const stats = [
   { value: `${new Date().getFullYear() - site.foundedYear}+`, label: "Years Serving Trade" },
   { value: "500+", label: "Machines Delivered" },
   { value: "100%", label: "Genuine Spares Stocked" },
-  { value: "Dar & Upcountry", label: "Daily Bus Cargo Dispatch" },
+  { value: "Nairobi & Upcountry", label: "Daily Bus Cargo Dispatch" },
 ];
 
 // Why choose Maggy City
@@ -48,8 +52,8 @@ const values = [
   },
   {
     icon: TruckIcon,
-    title: "Dar es Salaam & Regional Delivery",
-    body: "Collect same-day from our shop at Nyanza House or arrange delivery anywhere in Dar es Salaam and via cargo bus parcels across Tanzania.",
+    title: "Nairobi & Countrywide Delivery",
+    body: "Collect same-day from our shop at Nyanza House or arrange delivery anywhere in Nairobi and via cargo bus parcels across Kenya.",
   },
 ];
 
@@ -68,22 +72,22 @@ const orderSteps = [
   {
     step: "03",
     title: "Tested & Handed Over",
-    desc: "Collect from our shop or get same-day delivery in Dar es Salaam / parcel bus upcountry.",
+    desc: "Collect from our shop or get same-day delivery in Nairobi / parcel bus upcountry.",
   },
 ];
 
 // Upcountry destinations
 const upcountryHubs = [
-  "Mwanza",
-  "Arusha",
-  "Dodoma",
-  "Mbeya",
-  "Morogoro",
-  "Tanga",
-  "Moshi",
-  "Zanzibar",
-  "Iringa",
-  "Tabora",
+  "Mombasa",
+  "Kisumu",
+  "Nakuru",
+  "Eldoret",
+  "Thika",
+  "Nyeri",
+  "Meru",
+  "Machakos",
+  "Kakamega",
+  "Kisii",
 ];
 
 // FAQs
@@ -97,8 +101,8 @@ const faqs = [
     a: "Yes. We stock genuine and compatible spares for all machines we carry — including brush cutter blades, belts, compressor valves, switches, and mill screens.",
   },
   {
-    q: "Can you send equipment outside Dar es Salaam?",
-    a: "Yes. We arrange secure parcel dispatches daily via reputable bus lines and cargo trucks to all regions of Tanzania.",
+    q: "Can you send equipment outside Nairobi?",
+    a: "Yes. We arrange secure parcel dispatches daily via reputable bus lines and cargo trucks to all counties in Kenya.",
   },
   {
     q: "Do you test machines before handover?",
@@ -110,27 +114,28 @@ const faqs = [
 const testimonials = [
   {
     quote:
-      "I bought the Milano 500L compressor for my spray painting and tyre shop in Tabata. The build quality and pressure retention are outstanding. Delivered same day!",
-    author: "Juma M. — Workshop Owner, Tabata",
+      "I bought the Milano 500L compressor for my spray painting and tyre shop in Industrial Area. The build quality and pressure retention are outstanding. Delivered same day!",
+    author: "Juma M. — Workshop Owner, Industrial Area",
     rating: "★★★★★",
   },
   {
     quote:
       "The backpack brush cutter came with all the blades and harness. We cleared 3 acres of bush without a single issue. Honest people who give straight answers.",
-    author: "Rashid K. — Farm Supervisor, Bagamoyo",
+    author: "Rashid K. — Farm Supervisor, Kiambu",
     rating: "★★★★★",
   },
   {
     quote:
-      "Ordered the 2-in-1 rice and maize mill sent to Morogoro via bus parcel. It arrived the next morning intact and running smoothly. Highly recommended.",
-    author: "Emanuel S. — Grain Miller, Morogoro",
+      "Ordered the 2-in-1 rice and maize mill sent to Nakuru via bus parcel. It arrived the next morning intact and running smoothly. Highly recommended.",
+    author: "Emanuel S. — Grain Miller, Nakuru",
     rating: "★★★★★",
   },
 ];
 
-export default function Home() {
-  // Grab the 5 real photographed products
-  const featuredProducts = products.filter((p) => p.image?.startsWith("/products/"));
+export default async function Home() {
+  const products = await getPublishedProducts();
+  // Only products that have a real photo are worth featuring in the hero strip.
+  const featuredProducts = products.filter((p) => Boolean(p.image)).slice(0, 5);
 
   return (
     <>
@@ -169,7 +174,7 @@ export default function Home() {
                 </h1>
 
                 <p className="mt-6 max-w-xl text-pretty text-base leading-7 text-ink-200 sm:text-lg sm:leading-8">
-                  Direct suppliers of commercial air compressors, agricultural milling machinery, petrol brush cutters, generators, and precision power tools to farms, garages, and workshops across Tanzania — with in-stock spare parts and honest sizing advice.
+                  Direct suppliers of commercial air compressors, agricultural milling machinery, petrol brush cutters, generators, and precision power tools to farms, garages, and workshops across Kenya — with in-stock spare parts and honest sizing advice.
                 </p>
 
                 {/* Direct action buttons */}
@@ -281,7 +286,7 @@ export default function Home() {
                   <div className="mt-4 flex items-center justify-between rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-xs">
                     <div className="flex items-center gap-2">
                       <PinIcon className="size-4 text-emerald-400" />
-                      <span className="text-ink-200">Visit us at Nyanza House, Dar es Salaam</span>
+                      <span className="text-ink-200">Visit us at Nyanza House, Nairobi</span>
                     </div>
                     <a
                       href="#contact"
@@ -450,10 +455,10 @@ export default function Home() {
                   <TruckIcon className="size-4 text-emerald-400" /> Regional Delivery Hubs
                 </span>
                 <h2 className="mt-3 text-2xl font-bold tracking-tight text-white sm:text-3xl">
-                  Daily Cargo Dispatch Across Tanzania
+                  Daily Cargo Dispatch Across Kenya
                 </h2>
                 <p className="mt-2 text-sm leading-6 text-brand-200">
-                  Outside Dar es Salaam? We safely package, inspect, and dispatch machinery daily via established bus and truck cargo lines.
+                  Outside Nairobi? We safely package, inspect, and dispatch machinery daily via established bus and truck cargo lines.
                 </p>
               </div>
 
@@ -608,14 +613,23 @@ export default function Home() {
                 </div>
               </div>
 
-              <div className="overflow-hidden rounded-2xl border border-white/10 bg-white/5">
+              <div className="flex flex-col overflow-hidden rounded-2xl border border-white/10 bg-white/5">
                 <iframe
                   title={`Map showing the location of ${site.name}`}
-                  src={`https://www.google.com/maps?q=${mapsQuery}&output=embed`}
+                  src={`https://www.google.com/maps?q=${mapsQuery}&z=17&output=embed`}
                   loading="lazy"
                   referrerPolicy="no-referrer-when-downgrade"
-                  className="h-80 w-full border-0 lg:h-full lg:min-h-[26rem]"
+                  className="h-80 w-full flex-1 border-0 lg:min-h-[24rem]"
                 />
+                <a
+                  href={directionsUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center gap-2 border-t border-white/10 px-4 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
+                >
+                  <PinIcon className="size-4 text-brand-400" />
+                  Get directions to the shop
+                </a>
               </div>
             </div>
 

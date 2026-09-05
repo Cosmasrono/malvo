@@ -8,23 +8,29 @@ export const site = {
   shortName: "Maggy City",
   tagline: "Machines, tools & power solutions you can rely on.",
   description:
-    "Maggy City Tools and Electronics supplies brush cutters, rice mills, air compressors, power tools, spare parts and electronics to homes, farms and businesses in Dar es Salaam.",
-  url: "https://maggycitytools.co.tz",
+    "Maggy City Tools and Electronics supplies brush cutters, rice mills, air compressors, power tools, spare parts and electronics to homes, farms and businesses in Nairobi.",
+  url: "https://maggycitytools.co.ke",
   foundedYear: 2015,
 
-  // TODO(owner): confirm the postal/city line before launch.
   address: {
     street: "Nyanza House, Shop No. 5",
     area: "Junction of Mfangano Street & Sheikh Karume Road",
-    city: "Dar es Salaam",
-    country: "Tanzania",
-    countryCode: "TZ",
+    city: "Nairobi",
+    country: "Kenya",
+    countryCode: "KE",
+    /**
+     * What we hand to Google Maps, kept separate from the address shown to
+     * customers. Feeding it the junction description put the pin in Tanzania:
+     * "Junction of" is not geocodable and "Sheikh Karume" matches Tanzanian
+     * places strongly enough to beat the ", Kenya" suffix. The building name
+     * plus its street resolves unambiguously.
+     */
+    mapQuery: "Nyanza House, Mfangano Street, Nairobi, Kenya",
   },
 
   /** `tel` is dialable, `intl` is the E.164 form used for WhatsApp. */
   phones: [
-    { label: "0713 337 799", tel: "+255713337799", intl: "255713337799", whatsapp: true },
-    { label: "0780 337 799", tel: "+255780337799", intl: "255780337799", whatsapp: false },
+    { label: "0713 337 799", tel: "+254713337799", intl: "254713337799", whatsapp: true },
   ],
 
   // TODO(owner): confirm trading hours.
@@ -45,18 +51,24 @@ export const primaryPhone = site.phones[0];
 
 export const fullAddress = `${site.address.street}, ${site.address.area}, ${site.address.city}, ${site.address.country}`;
 
-export const mapsQuery = encodeURIComponent(
-  `${site.address.area}, ${site.address.city}, ${site.address.country}`,
-);
+export const mapsQuery = encodeURIComponent(site.address.mapQuery);
+
+/** Opens the shop in the visitor's Maps app for turn-by-turn directions. */
+export const directionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${mapsQuery}`;
 
 export function whatsappLink(message: string) {
   return `https://wa.me/${primaryPhone.intl}?text=${encodeURIComponent(message)}`;
 }
 
+/**
+ * Root-relative so the links keep working from sub-pages such as /admin and
+ * /auth. On the home page the browser still treats these as same-document
+ * fragment jumps, so nothing reloads.
+ */
 export const nav = [
-  { label: "Home", href: "#home" },
-  { label: "Products", href: "#products" },
-  { label: "Services", href: "#services" },
-  { label: "About", href: "#about" },
-  { label: "Contact", href: "#contact" },
+  { label: "Home", href: "/#home" },
+  { label: "Products", href: "/#products" },
+  { label: "Services", href: "/#services" },
+  { label: "About", href: "/#about" },
+  { label: "Contact", href: "/#contact" },
 ];

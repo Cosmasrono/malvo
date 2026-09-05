@@ -1,14 +1,16 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { nav, primaryPhone, site } from "@/lib/site";
-import { ClockIcon, PhoneIcon, PinIcon } from "@/components/icons";
+import { ClockIcon, GearIcon, PhoneIcon, PinIcon } from "@/components/icons";
 import { buttonStyles, Container, Logo } from "@/components/ui";
 
 interface AuthUser {
   id: string;
   email: string;
   username: string | null;
+  isAdmin?: boolean;
 }
 
 /** Derive a human-readable weekday hours string from the structured site data. */
@@ -88,7 +90,7 @@ export function SiteHeader() {
 
       <div className="border-b border-ink-200/80 bg-paper/85 backdrop-blur-md">
         <Container className="flex items-center justify-between gap-4 py-3">
-          <a href="#home" className="flex items-center gap-3" onClick={() => setOpen(false)}>
+          <a href="/" className="flex items-center gap-3" onClick={() => setOpen(false)}>
             <Logo />
             <span className="leading-tight">
               <span className="block text-[15px] font-bold tracking-tight text-ink-900 sm:text-base">
@@ -115,6 +117,15 @@ export function SiteHeader() {
           <div className="flex items-center gap-2">
             {user ? (
               <div className="hidden items-center gap-2 sm:inline-flex">
+                {user.isAdmin ? (
+                  <Link
+                    href="/admin"
+                    className="inline-flex items-center gap-1.5 rounded-full border border-brand-600/30 bg-brand-50 px-3.5 py-1.5 text-xs font-bold text-brand-700 transition hover:bg-brand-100"
+                  >
+                    <GearIcon className="size-3.5" />
+                    Manage products
+                  </Link>
+                ) : null}
                 <a
                   href="/auth"
                   className="inline-flex items-center gap-1.5 rounded-full border border-ink-200 bg-white px-3.5 py-1.5 text-xs font-semibold text-ink-800 hover:border-brand-600 hover:text-brand-700"
@@ -192,6 +203,16 @@ export function SiteHeader() {
             </a>
           ))}
           <div className="mt-3 grid gap-2">
+            {user?.isAdmin ? (
+              <Link
+                href="/admin"
+                onClick={() => setOpen(false)}
+                className="inline-flex items-center gap-2 rounded-xl border border-brand-600/30 bg-brand-50 px-3 py-3 text-sm font-bold text-brand-700"
+              >
+                <GearIcon className="size-4" />
+                Manage products
+              </Link>
+            ) : null}
             {user ? (
               <div className="flex items-center justify-between rounded-xl border border-ink-200 bg-white p-3">
                 <a

@@ -84,7 +84,7 @@ function ProductCard({ product }: { product: Product }) {
         <p className="mt-2 flex-1 text-sm leading-6 text-ink-500">{product.description}</p>
         
         <p className="mt-4 border-t border-ink-100 pt-3 text-xs font-medium text-ink-400">
-          Ready in shop · Delivery across Dar es Salaam
+          Ready in shop · Delivery across Nairobi
         </p>
 
         {/* WhatsApp Direct Order & Enquiry Actions */}

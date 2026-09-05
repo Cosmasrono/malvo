@@ -12,6 +12,7 @@ model User {
   email          String               @unique
   username       String?
   passwordHash   String
+  role           Role                 @default(USER)
   emailVerified  DateTime?
   createdAt      DateTime             @default(now())
   verification   EmailVerification?
@@ -35,4 +36,35 @@ model Session {
   userId     String   @db.ObjectId
   user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt  DateTime @default(now())
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+/// Shop catalogue. Managed from /admin — never edit product rows by hand.
+model Product {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  name        String   @unique
+  description String
+  category    String
+  icon        String   @default("ToolIcon")
+  /// Either a path under /public, an absolute URL, or /api/images/<id>.
+  image       String?
+  badge       String?
+  published   Boolean  @default(true)
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+/// Uploaded product photos, stored in the database so they survive
+/// deploys on read-only/serverless filesystems.
+model ProductImage {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  data      Bytes
+  mimeType  String
+  fileName  String?
+  createdAt DateTime @default(now())
 }

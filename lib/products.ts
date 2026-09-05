@@ -1,8 +1,12 @@
 /**
- * Product catalog data.
+ * Product catalog types and the starter catalogue.
  *
- * Real shop photos are placed in `public/products/` and referenced locally
- * (e.g. `image: "/products/backpack-brush-cutter.jpg"`).
+ * This module is imported by client components, so it must stay free of any
+ * database or Node-only imports. Live catalogue reads live in `lib/catalog.ts`.
+ *
+ * `starterProducts` is the shipped-with-the-site list. Once the shop owner
+ * imports it from /admin, the database becomes the source of truth and this
+ * array is only used as a fallback when the catalogue is empty.
  */
 
 export const categories = [
@@ -36,7 +40,7 @@ export type Product = {
   badge?: string;
 };
 
-export const products: Product[] = [
+export const starterProducts: Product[] = [
   {
     name: "Backpack Brush Cutter Machine",
     description:
@@ -123,3 +127,30 @@ export const products: Product[] = [
     image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&w=900&q=85",
   },
 ];
+
+/** Kept for callers that only need the shipped list (fallback rendering). */
+export const products = starterProducts;
+
+export const productIconKeys: ProductIconKey[] = [
+  "BladeIcon",
+  "GrainIcon",
+  "GaugeIcon",
+  "DropIcon",
+  "BoltIcon",
+  "SparkIcon",
+  "DiscIcon",
+  "PlugIcon",
+  "ToolIcon",
+];
+
+/** Categories a product can actually be filed under ("All" is filter-only). */
+export const assignableCategories = categories.filter(
+  (category): category is Exclude<Category, "All"> => category !== "All",
+);
+
+/** A catalogue row as the admin screen sees it (includes unpublished items). */
+export type AdminProduct = Product & {
+  id: string;
+  published: boolean;
+  sortOrder: number;
+};
