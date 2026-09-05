@@ -13,6 +13,7 @@ export type ProductPayload = {
   icon: string;
   image: string | null;
   badge: string | null;
+  price: number | null;
   published: boolean;
   sortOrder: number;
 };
@@ -73,6 +74,19 @@ export function parseProduct(
   if (has("badge")) {
     const badge = String(body.badge ?? "").trim();
     data.badge = badge ? badge.slice(0, 40) : null;
+  }
+
+  if (has("price")) {
+    if (body.price === null || body.price === "") {
+      data.price = null;
+    } else {
+      const price = Number(body.price);
+      if (!Number.isFinite(price) || price < 0) {
+        return { error: "Price must be a number of shillings, or blank for \"ask us\"." };
+      }
+      if (price > 100_000_000) return { error: "That price looks too large." };
+      data.price = Math.round(price);
+    }
   }
 
   if (has("published")) data.published = Boolean(body.published);

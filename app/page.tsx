@@ -20,6 +20,7 @@ import {
 } from "@/components/icons";
 import { mapsQuery, directionsUrl, site, whatsappLink, primaryPhone } from "@/lib/site";
 import { getPublishedProducts } from "@/lib/catalog";
+import { formatKsh } from "@/lib/money";
 
 // The catalogue is served from cache and refreshed on every admin change;
 // this ceiling is just a safety net.
@@ -326,9 +327,10 @@ export default async function Home() {
 
             <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {featuredProducts.map((item) => (
-                <div
+                <a
                   key={item.name}
-                  className="flex flex-col overflow-hidden rounded-2xl border border-ink-200/70 bg-paper shadow-card transition duration-200 hover:-translate-y-1 hover:shadow-lift"
+                  href="#products"
+                  className="group flex flex-col overflow-hidden rounded-2xl border border-ink-200/70 bg-paper shadow-card transition duration-200 hover:-translate-y-1 hover:shadow-lift"
                 >
                   <div className="relative h-52 w-full overflow-hidden bg-ink-100">
                     {item.image ? (
@@ -337,7 +339,7 @@ export default async function Home() {
                         alt={item.name}
                         fill
                         sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                        className="object-cover"
+                        className="object-cover transition-transform duration-300 group-hover:scale-105"
                       />
                     ) : null}
                     {item.badge ? (
@@ -354,19 +356,14 @@ export default async function Home() {
                     <h3 className="mt-2 text-lg font-bold text-ink-900">{item.name}</h3>
                     <p className="mt-2 flex-1 text-xs leading-5 text-ink-500">{item.description}</p>
 
-                    <div className="mt-5 space-y-2 border-t border-ink-100 pt-4">
-                      <a
-                        href={whatsappLink(`Hello ${site.shortName}, I want to order the: ${item.name}. Please confirm price and delivery.`)}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#25D366] px-4 py-2.5 text-xs font-bold text-white shadow-sm transition hover:bg-[#20ba5a]"
-                      >
-                        <WhatsAppIcon className="size-4" />
-                        Order on WhatsApp
-                      </a>
+                    <div className="mt-5 flex items-center justify-between gap-3 border-t border-ink-100 pt-4">
+                      <span className="text-base font-bold tracking-tight text-ink-900">
+                        {typeof item.price === "number" ? formatKsh(item.price) : "Ask for a price"}
+                      </span>
+                      <span className="text-xs font-bold text-brand-700">View &rarr;</span>
                     </div>
                   </div>
-                </div>
+                </a>
               ))}
             </div>
           </Container>

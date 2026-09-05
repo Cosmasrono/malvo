@@ -12,6 +12,8 @@ export type Draft = {
   icon: string;
   image: string;
   badge: string;
+  /** Empty string means "price on request" — the item cannot be bought online. */
+  price: string;
   published: boolean;
   sortOrder: number;
 };
@@ -183,6 +185,24 @@ export function ProductForm({
         />
         <p className="mt-1.5 text-xs text-ink-400">
           Max 4MB — JPEG, PNG, WebP or AVIF. Leave blank to show the icon instead.
+        </p>
+      </div>
+
+      <div>
+        <label className={labelStyles} htmlFor="product-price">Price (KSh)</label>
+        <input
+          id="product-price"
+          type="number"
+          min={0}
+          step={1}
+          className={`${fieldStyles} mt-2`}
+          value={draft.price}
+          onChange={(event) => update("price", event.target.value)}
+          placeholder="e.g. 45000"
+        />
+        <p className="mt-1.5 text-xs text-ink-400">
+          Leave blank for &quot;ask us&quot; — the card then shows the WhatsApp enquiry
+          only and the item cannot be added to a cart.
         </p>
       </div>
 

@@ -188,3 +188,13 @@ export function GearIcon(props: IconProps) {
     </Base>
   );
 }
+
+export function CartIcon(props: IconProps) {
+  return (
+    <Base {...props}>
+      <circle cx="9" cy="20" r="1.3" />
+      <circle cx="18" cy="20" r="1.3" />
+      <path d="M2.5 3h2.2l2.3 11.2a1.6 1.6 0 0 0 1.6 1.3h8.8a1.6 1.6 0 0 0 1.6-1.3L21 7H6" />
+    </Base>
+  );
+}

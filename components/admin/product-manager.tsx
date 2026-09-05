@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { buttonStyles } from "@/components/ui";
 import { ProductForm, type Draft } from "@/components/admin/product-form";
 import { assignableCategories, type AdminProduct } from "@/lib/products";
+import { PriceCell } from "@/components/admin/price-cell";
 
 const emptyDraft = (sortOrder: number): Draft => ({
   name: "",
@@ -14,6 +15,7 @@ const emptyDraft = (sortOrder: number): Draft => ({
   icon: "ToolIcon",
   image: "",
   badge: "",
+  price: "",
   published: true,
   sortOrder,
 });
@@ -25,6 +27,7 @@ const toDraft = (product: AdminProduct): Draft => ({
   icon: product.icon,
   image: product.image ?? "",
   badge: product.badge ?? "",
+  price: typeof product.price === "number" ? String(product.price) : "",
   published: product.published,
   sortOrder: product.sortOrder,
 });
@@ -54,6 +57,10 @@ export function ProductManager({ initialProducts }: { initialProducts: AdminProd
   );
 
   const visibleCount = products.filter((product) => product.published).length;
+  // Unpriced items cannot be bought online, so surface them for the owner.
+  const unpricedCount = products.filter(
+    (product) => typeof product.price !== "number",
+  ).length;
 
   function startCreate() {
     setEditingId(null);
@@ -85,6 +92,7 @@ export function ProductManager({ initialProducts }: { initialProducts: AdminProd
       ...draft,
       image: draft.image.trim() || null,
       badge: draft.badge.trim() || null,
+      price: draft.price.trim() === "" ? null : Number(draft.price),
     };
 
     try {
@@ -199,6 +207,14 @@ export function ProductManager({ initialProducts }: { initialProducts: AdminProd
           </p>
           <p className="text-xs text-ink-500">
             {visibleCount} visible on the shop · {products.length - visibleCount} hidden
+            {unpricedCount > 0 ? (
+              <>
+                {" · "}
+                <span className="font-semibold text-amber-700">
+                  {unpricedCount} without a price
+                </span>
+              </>
+            ) : null}
           </p>
         </div>
         <div className="flex flex-wrap gap-3">
@@ -284,6 +300,20 @@ export function ProductManager({ initialProducts }: { initialProducts: AdminProd
                     )}
                   </div>
                   <p className="mt-1 line-clamp-2 text-sm text-ink-500">{product.description}</p>
+                  <PriceCell
+                    productId={product.id}
+                    price={product.price}
+                    onSaved={(price) => {
+                      setProducts((current) =>
+                        current.map((item) =>
+                          item.id === product.id ? { ...item, price } : item,
+                        ),
+                      );
+                      setNotice(`Price updated for "${product.name}".`);
+                      router.refresh();
+                    }}
+                    onError={setError}
+                  />
                 </div>
 
                 <div className="flex shrink-0 flex-wrap items-center gap-2">

@@ -3,7 +3,8 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { nav, primaryPhone, site } from "@/lib/site";
-import { ClockIcon, GearIcon, PhoneIcon, PinIcon } from "@/components/icons";
+import { useCart } from "@/lib/cart";
+import { CartIcon, ClockIcon, GearIcon, PhoneIcon, PinIcon } from "@/components/icons";
 import { buttonStyles, Container, Logo } from "@/components/ui";
 
 interface AuthUser {
@@ -23,6 +24,7 @@ function weekdayHours(): string {
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
   const [user, setUser] = useState<AuthUser | null>(null);
+  const { count, ready } = useCart();
 
   // Fetch current user session
   useEffect(() => {
@@ -90,7 +92,7 @@ export function SiteHeader() {
 
       <div className="border-b border-ink-200/80 bg-paper/85 backdrop-blur-md">
         <Container className="flex items-center justify-between gap-4 py-3">
-          <a href="/" className="flex items-center gap-3" onClick={() => setOpen(false)}>
+          <Link href="/" className="flex items-center gap-3" onClick={() => setOpen(false)}>
             <Logo />
             <span className="leading-tight">
               <span className="block text-[15px] font-bold tracking-tight text-ink-900 sm:text-base">
@@ -100,7 +102,7 @@ export function SiteHeader() {
                 Tools &amp; Electronics
               </span>
             </span>
-          </a>
+          </Link>
 
           <nav aria-label="Primary" className="hidden items-center gap-8 lg:flex">
             {nav.map((item) => (
@@ -149,6 +151,19 @@ export function SiteHeader() {
                 Sign in
               </a>
             )}
+
+            <Link
+              href="/checkout"
+              aria-label={`Cart${ready && count > 0 ? `, ${count} item${count === 1 ? "" : "s"}` : ""}`}
+              className="relative inline-flex size-10 items-center justify-center rounded-full border border-ink-200 text-ink-700 transition hover:border-brand-600 hover:text-brand-700"
+            >
+              <CartIcon className="size-5" />
+              {ready && count > 0 ? (
+                <span className="absolute -right-1 -top-1 grid min-w-5 place-items-center rounded-full bg-brand-600 px-1 text-[10px] font-bold text-white">
+                  {count}
+                </span>
+              ) : null}
+            </Link>
 
             <a href={`tel:${primaryPhone.tel}`} className={`${buttonStyles.primary} hidden sm:inline-flex`}>
               <PhoneIcon className="size-4" />

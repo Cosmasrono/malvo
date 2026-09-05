@@ -8,14 +8,14 @@ import { prisma } from "@/lib/prisma";
 import {
   starterProducts,
   type Category,
-  type Product,
+  type PublicProduct,
   type ProductIconKey,
   productIconKeys,
   assignableCategories,
   type AdminProduct,
 } from "@/lib/products";
 
-export type { AdminProduct };
+export type { AdminProduct, PublicProduct };
 
 type ProductRow = {
   id: string;
@@ -25,6 +25,7 @@ type ProductRow = {
   icon: string;
   image: string | null;
   badge: string | null;
+  price: number | null;
   published: boolean;
   sortOrder: number;
 };
@@ -46,6 +47,7 @@ function toProduct(row: ProductRow): AdminProduct {
     icon,
     ...(row.image ? { image: row.image } : {}),
     ...(row.badge ? { badge: row.badge } : {}),
+    price: row.price,
     published: row.published,
     sortOrder: row.sortOrder,
   };
@@ -54,7 +56,7 @@ function toProduct(row: ProductRow): AdminProduct {
 const ORDER = [{ sortOrder: "asc" as const }, { createdAt: "asc" as const }];
 
 /** Published products for the public site. Falls back to the starter list. */
-export async function getPublishedProducts(): Promise<Product[]> {
+export async function getPublishedProducts(): Promise<PublicProduct[]> {
   try {
     const rows = await prisma.product.findMany({
       where: { published: true },

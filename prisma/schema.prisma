@@ -50,6 +50,8 @@ model Product {
   description String
   category    String
   icon        String   @default("ToolIcon")
+  /// Whole Kenyan shillings. Null means "ask us" — the item cannot be bought online.
+  price       Int?
   /// Either a path under /public, an absolute URL, or /api/images/<id>.
   image       String?
   badge       String?
@@ -67,4 +69,43 @@ model ProductImage {
   mimeType  String
   fileName  String?
   createdAt DateTime @default(now())
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+  FAILED
+  CANCELLED
+}
+
+/// One line on an order. Prices are copied in at checkout so a later
+/// catalogue edit never rewrites the history of what someone paid.
+type OrderItem {
+  productId String
+  name      String
+  unitPrice Int
+  quantity  Int
+}
+
+model Order {
+  id             String      @id @default(auto()) @map("_id") @db.ObjectId
+  /// Our own reference, also sent to PayHero as `external_reference`.
+  reference      String      @unique
+  customerName   String
+  phone          String
+  email          String?
+  notes          String?
+  deliveryMethod String      @default("pickup")
+  /// "mpesa" pays by STK push; "cash" is settled in person and agreed on WhatsApp.
+  paymentMethod  String      @default("mpesa")
+  items          OrderItem[]
+  total          Int
+  status         OrderStatus @default(PENDING)
+  /// M-Pesa receipt number once the payment clears.
+  mpesaReceipt   String?
+  /// PayHero's own reference for the STK push.
+  providerRef    String?
+  failureReason  String?
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
 }

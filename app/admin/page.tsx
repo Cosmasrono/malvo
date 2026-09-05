@@ -71,12 +71,14 @@ export default async function AdminPage() {
               <p className="text-sm text-ink-400">
                 Signed in as <span className="font-semibold text-ink-700">{admin.email}</span>
               </p>
-              <Link
-                href="/#products"
-                className="text-sm font-semibold text-brand-700 hover:underline"
-              >
-                View the shop →
-              </Link>
+              <div className="flex gap-4">
+                <Link href="/admin/orders" className="text-sm font-semibold text-brand-700 hover:underline">
+                  Orders →
+                </Link>
+                <Link href="/#products" className="text-sm font-semibold text-brand-700 hover:underline">
+                  View the shop →
+                </Link>
+              </div>
             </div>
           </div>
 

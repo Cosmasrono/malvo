@@ -3,10 +3,11 @@
 import { useMemo, useState } from "react";
 import Image from "next/image";
 import type { ComponentType, SVGProps } from "react";
-import { categories, type Category, type Product, type ProductIconKey } from "@/lib/products";
+import { categories, type Category, type PublicProduct, type ProductIconKey } from "@/lib/products";
+import { useCart } from "@/lib/cart";
+import { formatKsh } from "@/lib/money";
 import { whatsappLink, site } from "@/lib/site";
 import {
-  ChatIcon,
   BladeIcon,
   GrainIcon,
   GaugeIcon,
@@ -16,6 +17,7 @@ import {
   DiscIcon,
   PlugIcon,
   ToolIcon,
+  CartIcon,
   WhatsAppIcon,
 } from "@/components/icons";
 
@@ -37,8 +39,27 @@ const productIconMap: Record<ProductIconKey, ComponentType<SVGProps<SVGSVGElemen
 // ---------------------------------------------------------------------------
 // ProductCard
 // ---------------------------------------------------------------------------
-function ProductCard({ product }: { product: Product }) {
+function ProductCard({ product }: { product: PublicProduct }) {
   const Icon = productIconMap[product.icon];
+  const { add } = useCart();
+  const [added, setAdded] = useState(false);
+
+  // Only catalogue rows with a price can be bought online; everything else
+  // keeps the WhatsApp-for-price flow.
+  const buyable = Boolean(product.id) && typeof product.price === "number" && product.price > 0;
+
+  function addToCart() {
+    if (!buyable) return;
+    add({
+      productId: product.id as string,
+      name: product.name,
+      unitPrice: product.price as number,
+      ...(product.image ? { image: product.image } : {}),
+    });
+    setAdded(true);
+    window.setTimeout(() => setAdded(false), 1800);
+  }
+
   const orderMessage = `Hello ${site.shortName}, I want to order the: ${product.name}. Please confirm availability and payment/delivery details.`;
   const enquiryMessage = `Hello ${site.shortName}, could you please give me current pricing and specs for: ${product.name}?`;
 
@@ -71,43 +92,57 @@ function ProductCard({ product }: { product: Product }) {
       )}
 
       <div className="flex flex-1 flex-col p-5">
-        <div className="flex items-center justify-between gap-2">
-          <span className="inline-flex rounded-full bg-brand-50 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-brand-700">
-            {product.category}
-          </span>
-          <span className="text-[11px] font-medium text-ink-400">
-            No login needed
-          </span>
-        </div>
+        <span className="inline-flex self-start rounded-full bg-brand-50 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-brand-700">
+          {product.category}
+        </span>
 
         <h3 className="mt-3 text-lg font-semibold tracking-tight text-ink-900">{product.name}</h3>
         <p className="mt-2 flex-1 text-sm leading-6 text-ink-500">{product.description}</p>
-        
-        <p className="mt-4 border-t border-ink-100 pt-3 text-xs font-medium text-ink-400">
-          Ready in shop · Delivery across Nairobi
-        </p>
 
-        {/* WhatsApp Direct Order & Enquiry Actions */}
+        <div className="mt-4 flex items-baseline justify-between gap-3 border-t border-ink-100 pt-3">
+          <span className="text-lg font-bold tracking-tight text-ink-900">
+            {buyable ? formatKsh(product.price as number) : "Price on request"}
+          </span>
+          <span className="text-xs font-medium text-ink-400">Ready in shop</span>
+        </div>
+
+        {/*
+          One primary action per card. A priced item is bought; an unpriced one
+          starts a conversation. The WhatsApp alternative stays available as a
+          quiet link rather than a third competing button.
+        */}
         <div className="mt-4 space-y-2">
-          <a
-            href={whatsappLink(orderMessage)}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#25D366] px-4 py-2.5 text-xs font-bold text-white shadow-sm transition hover:bg-[#20ba5a] active:scale-[0.98]"
-          >
-            <WhatsAppIcon className="size-4" />
-            Order on WhatsApp
-          </a>
-
-          <a
-            href={whatsappLink(enquiryMessage)}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex w-full items-center justify-center gap-1.5 rounded-xl border border-ink-200 py-2 text-xs font-semibold text-ink-700 transition hover:border-brand-600 hover:text-brand-700"
-          >
-            <ChatIcon className="size-3.5" />
-            Ask for a price
-          </a>
+          {buyable ? (
+            <>
+              <button
+                type="button"
+                onClick={addToCart}
+                className="flex w-full items-center justify-center gap-2 rounded-xl bg-ink-900 px-4 py-3 text-xs font-bold text-white shadow-sm transition hover:bg-ink-700 active:scale-[0.98]"
+              >
+                <CartIcon className="size-4" />
+                {added ? "Added to cart ✓" : "Add to cart"}
+              </button>
+              <a
+                href={whatsappLink(orderMessage)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex w-full items-center justify-center gap-1.5 text-xs font-semibold text-ink-500 transition hover:text-[#25D366]"
+              >
+                <WhatsAppIcon className="size-3.5" />
+                or order on WhatsApp
+              </a>
+            </>
+          ) : (
+            <a
+              href={whatsappLink(enquiryMessage)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#25D366] px-4 py-3 text-xs font-bold text-white shadow-sm transition hover:bg-[#20ba5a] active:scale-[0.98]"
+            >
+              <WhatsAppIcon className="size-4" />
+              Ask for a price
+            </a>
+          )}
         </div>
       </div>
     </article>
@@ -118,7 +153,7 @@ function ProductCard({ product }: { product: Product }) {
 // ProductFilter (filter buttons + grid)
 // ---------------------------------------------------------------------------
 interface ProductFilterProps {
-  products: Product[];
+  products: PublicProduct[];
 }
 
 export function ProductFilter({ products }: ProductFilterProps) {

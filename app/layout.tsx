@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { site } from "@/lib/site";
+import { CartProvider } from "@/lib/cart";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -86,7 +87,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         >
           Skip to content
         </a>
-        {children}
+        <CartProvider>{children}</CartProvider>
         <script
           type="application/ld+json"
           // Static, author-controlled structured data.

@@ -38,7 +38,16 @@ export type Product = {
   icon: ProductIconKey;
   image?: string;
   badge?: string;
+  /** Whole shillings. Null/undefined means "ask us" — it cannot be bought online. */
+  price?: number | null;
 };
+
+/**
+ * A product as the public catalogue sees it. `id` is only present for rows
+ * that came from the database; the shipped starter list has none, which is
+ * also why those items cannot be added to a cart.
+ */
+export type PublicProduct = Product & { id?: string };
 
 export const starterProducts: Product[] = [
   {

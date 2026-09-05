@@ -88,6 +88,7 @@ export async function POST(request: Request) {
         icon: parsed.data.icon as string,
         image: parsed.data.image ?? null,
         badge: parsed.data.badge ?? null,
+        price: parsed.data.price ?? null,
         published: parsed.data.published ?? true,
         sortOrder: parsed.data.sortOrder ?? count,
       },
